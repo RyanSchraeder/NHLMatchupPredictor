@@ -1,9 +1,4 @@
 import sys
-import boto3
-import botocore.exceptions
-import requests
-import urllib3
-import ssl
 import snowflake.connector
 from snowflake.snowpark import Session
 import os

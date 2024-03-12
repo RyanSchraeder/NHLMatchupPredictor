@@ -1,10 +1,4 @@
 import time
-import sys
-import os
-import datetime as dt
-
-# For casting query results to a Pandas DataFrame
-import pandas as pd
 
 # Snowflake Connections
 from connectors import get_snowflake_connection
