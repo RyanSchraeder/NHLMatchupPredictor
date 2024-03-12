@@ -1,15 +1,11 @@
 # Import python packages
 import streamlit as st
-import plotly.express as px
 import numpy as np
 import pandas as pd
 
 import os
-import pickle
-import seaborn as sns
-import matplotlib.pyplot as plt 
 from datetime import datetime, timedelta
-from snowflake.snowpark.context import get_active_session
+from src.connectors import get_snowflake_connection
 
 # Write directly to the app
 st.title("NHL Matchup Predictor :ice_hockey_stick_and_puck:")
@@ -25,7 +21,7 @@ if not input_end_date:
     input_end_date = datetime.now().date() - timedelta(days=1)
     
 # Get the current credentials
-session = get_active_session()
+session = get_snowflake_connection('standard')
 
 #  Create an example dataframe
 #  Note: this is just some dummy data, but you can easily connect to your Snowflake data
