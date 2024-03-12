@@ -21,7 +21,8 @@ if not input_end_date:
     input_end_date = datetime.now().date() - timedelta(days=1)
     
 # Get the current credentials
-session = get_snowflake_connection('spark')
+session = get_snowflake_connection('standard')
+cursor = session.cursor()
 st.write(session)
 print(session)
 
@@ -29,7 +30,7 @@ print(session)
 #  Note: this is just some dummy data, but you can easily connect to your Snowflake data
 #  It is also possible to query data using raw SQL using session.sql() e.g. session.sql("select * from table")
 
-query = f"""
+stats = f"""
     SELECT DISTINCT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_SEASON_STATS 
     WHERE 
         AWAY_GOALS IS NOT NULL OR HOME_GOALS IS NOT NULL
@@ -38,14 +39,18 @@ query = f"""
   """
 
 # st.write(query)
-created_dataframe = session.sql(query)
-
+# created_dataframe = session.sql(query)
+cursor.execute(stats)
+created_dataframe = cursor.fetch_pandas_all()
 
 # Execute the query and convert it into a Pandas dataframe
 queried_data = created_dataframe.to_pandas()
-predictions = session.sql('''
+
+preds = '''
     SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS 
-''').to_pandas()
+'''
+cursor.execute(preds)
+predictions = cursor.fetch_pandas_all()
 
 # Close snowpark session
 session.close()
