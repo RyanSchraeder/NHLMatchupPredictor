@@ -48,12 +48,6 @@ teams = f"""SELECT DISTINCT AWAY_TEAM_ID FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL
 cursor.execute(stats)
 df = cursor.fetch_pandas_all()
 
-st.subheader("Analyze All Regular Season and Team Statistics on Your Own! :smile:")
-analysis = pyg.to_html(df)
-
-# Embed the HTML into the Streamlit app
-components.html(analysis, height=800, scrolling=True)
-
 cursor.execute(teams)
 teams = cursor.fetch_pandas_all()
 
@@ -72,6 +66,11 @@ session.close()
 # Prepare data transformations for input validation
 # Drop unnecessary columns
 df.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
+st.subheader("Analyze All Regular Season and Team Statistics on Your Own! :smile:")
+analysis = pyg.to_html(df)
+
+# Embed the HTML into the Streamlit app
+components.html(analysis, height=800, scrolling=True)
 
 team_names, team_codes = teams['AWAY_TEAM_ID'].unique(), predictions['AWAY_TEAM_ID'].unique()
 
