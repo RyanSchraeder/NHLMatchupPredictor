@@ -22,6 +22,8 @@ if not input_end_date:
     
 # Get the current credentials
 session = get_snowflake_connection('spark')
+st.write(session)
+print(session)
 
 #  Create an example dataframe
 #  Note: this is just some dummy data, but you can easily connect to your Snowflake data
@@ -41,7 +43,9 @@ created_dataframe = session.sql(query)
 
 # Execute the query and convert it into a Pandas dataframe
 queried_data = created_dataframe.to_pandas()
-predictions = session.sql('''SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS ''').to_pandas()
+predictions = session.sql('''
+    SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS 
+''').to_pandas()
 
 # Close snowpark session
 session.close()
