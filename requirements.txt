@@ -2,6 +2,7 @@ pandas
 numpy
 cachetools
 pydantic
+pygwalker
 snowflake-connector-python
 snowflake-connector-python[pandas]
 snowflake-snowpark-python
