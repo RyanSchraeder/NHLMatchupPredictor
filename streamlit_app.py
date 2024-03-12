@@ -21,7 +21,7 @@ if not input_end_date:
     input_end_date = datetime.now().date() - timedelta(days=1)
     
 # Get the current credentials
-session = get_snowflake_connection('standard')
+session = get_snowflake_connection('spark')
 
 #  Create an example dataframe
 #  Note: this is just some dummy data, but you can easily connect to your Snowflake data
@@ -42,6 +42,9 @@ created_dataframe = session.sql(query)
 # Execute the query and convert it into a Pandas dataframe
 queried_data = created_dataframe.to_pandas()
 predictions = session.sql('''SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS ''').to_pandas()
+
+# Close snowpark session
+session.close()
 
 # Drop unnecessary columns
 queried_data.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
@@ -68,8 +71,6 @@ else:
 
 if input_away_team == input_home_team:
     st.subheader("Uh. One team can't face itself unless you are playing Quantum Hockey in a multidimensional league. :alien:")
-
-
 
 # Regular Season
 st.subheader("Regular Season Data")

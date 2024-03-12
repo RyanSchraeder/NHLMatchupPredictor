@@ -11,9 +11,6 @@ load_dotenv(find_dotenv())
 def get_snowflake_connection(method):
     """ Confirm Access to Snowflake"""
 
-    def close_session_wrapper():
-        return session.close()
-
     try:
 
         params = {
@@ -46,9 +43,6 @@ def get_snowflake_connection(method):
         if method == 'spark':
             session = Session.builder.configs(params).create()
             return session
-
-        if method == 'spark-close':
-            close_session_wrapper()
 
     except Exception as e:
         raise e
