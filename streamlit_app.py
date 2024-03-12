@@ -23,8 +23,6 @@ if not input_end_date:
 # Get the current credentials
 session = get_snowflake_connection('standard')
 cursor = session.cursor()
-st.write(session)
-print(session)
 
 #  Create an example dataframe
 #  Note: this is just some dummy data, but you can easily connect to your Snowflake data
@@ -38,17 +36,15 @@ stats = f"""
     ORDER BY DATE DESC
   """
 
-# st.write(query)
-# created_dataframe = session.sql(query)
-cursor.execute(stats)
-created_dataframe = cursor.fetch_pandas_all()
-
 # Execute the query and convert it into a Pandas dataframe
-queried_data = created_dataframe.to_pandas()
+cursor.execute(stats)
+df = cursor.fetch_pandas_all()
 
 preds = '''
     SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS 
 '''
+
+# Execute the query and convert it into a Pandas dataframe
 cursor.execute(preds)
 predictions = cursor.fetch_pandas_all()
 
@@ -56,9 +52,9 @@ predictions = cursor.fetch_pandas_all()
 session.close()
 
 # Drop unnecessary columns
-queried_data.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
+df.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
 
-compare = pd.DataFrame(queried_data['AWAY_TEAM_ID'].unique(), predictions['AWAY_TEAM_ID'].unique())[0].to_dict()
+compare = pd.DataFrame(df['AWAY_TEAM_ID'].unique(), predictions['AWAY_TEAM_ID'].unique())[0].to_dict()
 
 # Input validation
 
@@ -85,7 +81,7 @@ if input_away_team == input_home_team:
 st.subheader("Regular Season Data")
 st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
 
-results = queried_data[ (queried_data['AWAY_TEAM_ID'] == input_away_team) & (queried_data['HOME_TEAM_ID']== input_home_team) ]
+results = df[ (df['AWAY_TEAM_ID'] == input_away_team) & (df['HOME_TEAM_ID']== input_home_team) ]
 st.dataframe(results, use_container_width=True)
 
 # Predictions
