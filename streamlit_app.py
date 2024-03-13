@@ -53,7 +53,9 @@ teams = cursor.fetch_pandas_all()
 
 # Create the Predictions Query and DataFrame
 preds = '''
-    SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS 
+    SELECT DISTINCT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS 
+    WHERE DATE BETWEEN '{input_start_date}' and '{input_end_date}'
+    ORDER BY DATE DESC
 '''
 
 # Execute the query and convert it into a Pandas dataframe
