@@ -143,10 +143,7 @@ if st.button('Faceoff'):
 
     st.write('Prediction Model Output')
     predictions_df = predictions[['DATE', 'AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']]
-    pyg_preds_html = pyg.to_html(predictions_df)
-
-    # Embed the HTML into the Streamlit app
-    components.html(pyg_preds_html, height=800, scrolling=True)
+    st.dataframe(predictions_df)
 
     if len(home_wins) > len(away_wins):
         st.write(f'Based on regular season games and stats, the model antipicates a _Home Team Victory_ for the {input_home_team} when matched with the contender.')
