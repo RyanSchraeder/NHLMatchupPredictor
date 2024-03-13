@@ -66,12 +66,6 @@ session.close()
 # Prepare data transformations for input validation
 # Drop unnecessary columns
 df.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
-st.subheader("Analyze All Regular Season and Team Statistics on Your Own! :smile:")
-analysis = pyg.to_html(df)
-
-# Embed the HTML into the Streamlit app
-components.html(analysis, height=800, scrolling=True)
-
 team_names, team_codes = teams['AWAY_TEAM_ID'].unique(), predictions['AWAY_TEAM_ID'].unique()
 
 compare = pd.DataFrame(team_names, team_codes)[0].to_dict()
@@ -130,16 +124,13 @@ if st.button('Faceoff'):
     st.write("Getting data from Snowflake...")
     st.code(preds, language="sql")
     predictions['AWAY_TEAM_ID'], predictions['HOME_TEAM_ID'], predictions["OUTCOME"], predictions["PREDICTION"] = predictions['AWAY_TEAM_ID'].replace(compare), predictions['HOME_TEAM_ID'].replace(compare), predictions["OUTCOME"].replace(compare), predictions["PREDICTION"].replace(compare)
-    predictions = predictions[ (predictions['AWAY_TEAM_ID'] == input_away_team) & (predictions['HOME_TEAM_ID'] == input_home_team) ]
+    filtered_predictions = predictions[ (predictions['AWAY_TEAM_ID'] == input_away_team) & (predictions['HOME_TEAM_ID'] == input_home_team) ]
 
-    away_wins = predictions[predictions["PREDICTION"]==input_away_team]
-    home_wins = predictions[predictions["PREDICTION"]==input_home_team]
-
-    st.write('*Summary*')
-    st.dataframe(predictions)
+    away_wins = filtered_predictions[filtered_predictions["PREDICTION"]==input_away_team]
+    home_wins = filtered_predictions[filtered_predictions["PREDICTION"]==input_home_team]
 
     st.write('Prediction Model Output')
-    predictions_df = predictions[['DATE', 'AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']]
+    predictions_df = filtered_predictions[['DATE', 'AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']]
     st.dataframe(predictions_df)
 
     if len(home_wins) > len(away_wins):
@@ -148,6 +139,12 @@ if st.button('Faceoff'):
         st.write(f'Based on regular season games and stats, the model antipicates a _Away Team Victory_ for the {input_away_team} when matched with the contender.')
     else:
         st.write(f'Based on regular season games and stats, the model antipicates a _Draw_ ')
+
+    st.subheader("Analyze All Regular Season and Team Statistics on Your Own!")
+    full_dataset = pyg.to_html(predictions)
+    
+    # Embed the HTML into the Streamlit app
+    components.html(full_dataset, height=800, scrolling=True)
 else:
     st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
 
