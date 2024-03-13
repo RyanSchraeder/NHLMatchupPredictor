@@ -117,10 +117,7 @@ if st.button('Faceoff'):
     st.write("Getting data from Snowflake...")
     st.code(stats, language="sql")
     results = df[ (df['AWAY_TEAM_ID'] == input_away_team) & (df['HOME_TEAM_ID'] == input_home_team) ]
-    pyg_reg_szn_html = pyg.to_html(results)
-
-    # Embed the HTML into the Streamlit app
-    components.html(pyg_reg_szn_html, height=800, scrolling=True)
+    st.dataframe(results)
 
     # Predictions
     st.subheader('The Prediction Model Results')
