@@ -142,7 +142,7 @@ if st.button('Faceoff'):
     st.dataframe(predictions)
 
     st.write('Prediction Model Output')
-    predictions_df = predictions[['AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']]
+    predictions_df = predictions[['DATE', 'AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']]
     pyg_preds_html = pyg.to_html(predictions_df)
 
     # Embed the HTML into the Streamlit app
