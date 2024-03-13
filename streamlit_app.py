@@ -105,8 +105,7 @@ if st.button('Faceoff'):
     # Regular Season
     # st.subheader("Regular Season Data")
     st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
-
-    st.write("NOTE: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
+    st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
 
     st.write("Getting data from Snowflake...")
     st.code(stats, language="sql")
@@ -130,7 +129,7 @@ if st.button('Faceoff'):
     home_wins = filtered_predictions[filtered_predictions["PREDICTION"]==input_home_team]
 
     st.write('Prediction Model Output')
-    predictions_df = filtered_predictions[['DATE', 'AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']]
+    predictions_df = filtered_predictions[['DATE', 'AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']].drop_duplicates()
     st.dataframe(predictions_df)
 
     if len(home_wins) > len(away_wins):
