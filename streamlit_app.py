@@ -83,8 +83,6 @@ if st.button('Faceoff'):
     st.subheader("Regular Season Data")
     st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
     st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
-
-    st.write("Sending out the Zamboni ( getting data from Snowflake :snowflake: ) ...")
     
     # results = stats[ (stats['AWAY_TEAM_ID'] == input_away_team) & (stats['HOME_TEAM_ID'] == input_home_team) ]
 
@@ -138,4 +136,6 @@ if st.button('Faceoff'):
 else:
     st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
 
-st.button("Reset", type="primary")
+if st.button("Reset", type="primary"):
+    st.write('Sending out the Zamboni. The prediction results will clear momentarily.')
+
