@@ -111,8 +111,8 @@ if st.button('Faceoff'):
     st.markdown('''
         | DATE | AWAY_TEAM_ID | AWAY_GOALS | HOME_TEAM_ID | HOME_GOALS | ACTUAL | PREDICTION | AWAY_SOS (statistic in question) | HOME_SOS (statistic in question) |
         | ---  | ----------   | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | -------- |
-        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | Colorado Avalanche | Calgary Flames | 0 | 1 |
-        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | Colorado Avalanche | Calgary Flames | 1 | 0 |       
+        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Calgary Flames | 0 | 1 |
+        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Colorado Avalanche | 1 | 0 |       
                      
     ''')
 
@@ -133,6 +133,8 @@ if st.button('Faceoff'):
         st.write(f'Based on regular season games and stats, the model antipicates a _Home Team Victory_ for the {input_home_team} when matched with the contender.')
     elif len(home_wins) < len(away_wins):
         st.write(f'Based on regular season games and stats, the model antipicates a _Away Team Victory_ for the {input_away_team} when matched with the contender.')
+    else:
+        st.write(f'Based on the variance of some team stats, this is a close matchup! The model anticipates a _Draw_ between both teams.')
 else:
     st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
 
