@@ -1,5 +1,7 @@
+import streamlit as st
 
 def stats(start, end):
+    st.write("Sending out the Zamboni ( getting data from Snowflake :snowflake: ) ...")
     return f"""
         SELECT DISTINCT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_SEASON_STATS 
         WHERE DATE BETWEEN '{start}' and '{end}'
@@ -7,11 +9,13 @@ def stats(start, end):
     """
 
 def teams():
+    st.write("Sending out the Zamboni ( getting data from Snowflake :snowflake: ) ...")
     return f"""
         SELECT DISTINCT AWAY_TEAM_ID FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_SEASON_STATS
     """
 
 def predictions_overview_query(start, end, away, home):
+    st.write("Sending out the Zamboni ( getting data from Snowflake :snowflake: ) ...")
     return f"""
         SELECT DISTINCT 
             DATE, 
@@ -31,6 +35,7 @@ def predictions_overview_query(start, end, away, home):
     """
 
 def predictions_full_query(start, end):
+    st.write("Sending out the Zamboni ( getting data from Snowflake :snowflake: ) ...")
     return f"""
         SELECT DISTINCT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS
         WHERE DATE BETWEEN '{start}' and '{end}'
