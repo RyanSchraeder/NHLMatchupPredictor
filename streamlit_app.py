@@ -125,17 +125,7 @@ if st.button('Faceoff'):
         st.write("It looks like those teams didn't face each other in your input time range. Try again. Here are the teams with games that occurred then:")
         away, home = predictions["AWAY_TEAM_ID"].unique(), predictions["HOME_TEAM_ID"].unique()
         st.dataframe(pd.DataFrame(away, home), use_container_width=True)
-
-    # Filter away and home team predictions for the result statement
-    away_wins = predictions_overview[predictions_overview["PREDICTION"]==input_away_team]
-    home_wins = predictions_overview[predictions_overview["PREDICTION"]==input_home_team]
-
-    if len(home_wins) > len(away_wins):
-        st.write(f'Based on regular season games and stats, the model antipicates a _Home Team Victory_ for the {input_home_team} when matched with the contender.')
-    elif len(home_wins) < len(away_wins):
-        st.write(f'Based on regular season games and stats, the model antipicates a _Away Team Victory_ for the {input_away_team} when matched with the contender.')
-    else:
-        st.write(f'Based on the variance of some team stats, this is a close matchup! The model anticipates a _Draw_ between both teams.')
+        
 else:
     st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
 
