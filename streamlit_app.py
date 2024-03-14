@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from src.connectors import get_snowflake_connection
 
 # Queries
-from queries import stats, teams, predictions_full_query, predictions_overview_query
+from queries import stats, teams, predictions_full_query, predictions_overview_query, regular_season
 
 # Config
 st.set_page_config(
@@ -55,6 +55,7 @@ def execute_queries(query):
 # Create the Stats Query and DataFrame
 teams = execute_queries(teams())
 stats = execute_queries(stats(input_start_date, input_end_date))
+regular_season = execute_queries(regular_season(input_start_date, input_end_date))
 st.write("Season Schedule and Team Statistics Dataset:")
 st.dataframe(stats, use_container_width=True)
 
@@ -92,7 +93,7 @@ if st.button('Faceoff'):
         This Tableau-like display contains a dataset consisting of regular season, playoffs, and team stats along with the predicted winners of each game.
         Use it to build your own visualizations to dive deeper into the data for all predictions.
     """)
-    viz = pyg.to_html(predictions)
+    viz = pyg.to_html(regular_season)
 
     # Embed the HTML into the Streamlit app
     components.html(viz, height=800, scrolling=True)
@@ -120,10 +121,10 @@ if st.button('Faceoff'):
     st.write("Predictions:")
     st.dataframe(predictions_overview, use_container_width=True)
 
-    # if len(predictions_overview) == 0 or not predictions_overview:
-    #     st.write("It looks like those teams didn't face each other in your input time range. Try again. Here are the teams with games that occurred then:")
-    #     away, home = predictions["AWAY_TEAM_ID"].unique(), predictions["HOME_TEAM_ID"].unique()
-    #     st.dataframe(pd.DataFrame(away, home), use_container_width=True)
+    if not len(predictions_overview):
+        st.write("It looks like those teams didn't face each other in your input time range. Try again. Here are the teams with games that occurred then:")
+        away, home = predictions["AWAY_TEAM_ID"].unique(), predictions["HOME_TEAM_ID"].unique()
+        st.dataframe(pd.DataFrame(away, home), use_container_width=True)
 
     # Filter away and home team predictions for the result statement
     away_wins = predictions_overview[predictions_overview["PREDICTION"]==input_away_team]
