@@ -59,34 +59,12 @@ st.write("Season Schedule and Team Statistics Dataset:")
 st.dataframe(stats, use_container_width=True)
 
 # Create the Predictions Query and DataFrame
-<<<<<<< HEAD
 predictions = execute_queries(predictions_full_query(input_start_date, input_end_date))
 predictions_overview = execute_queries(predictions_overview_query(input_start_date, input_end_date, input_away_team, input_home_team))
 
 # Prepare data transformations for input validation
 # Drop unnecessary columns from team stats
 stats.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
-=======
-preds = '''
-    SELECT DISTINCT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_STATS_PREDICTIONS 
-    WHERE DATE BETWEEN '{input_start_date}' and '{input_end_date}'
-    ORDER BY DATE DESC
-'''
-
-# Execute the query and convert it into a Pandas dataframe
-cursor.execute(preds)
-predictions = cursor.fetch_pandas_all()
-
-# Close session
-session.close()
-
-# Prepare data transformations for input validation
-# Drop unnecessary columns
-df.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
-team_names, team_codes = teams['AWAY_TEAM_ID'].unique(), predictions['AWAY_TEAM_ID'].unique()
-
-compare = pd.DataFrame(team_names, team_codes)[0].to_dict()
->>>>>>> b26f7023a669c4c7964f0ae30ce4d9c1cb768ca3
 
 team_names = teams['AWAY_TEAM_ID'].unique()
 
@@ -106,7 +84,6 @@ if st.button('Faceoff'):
     st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
     st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
 
-<<<<<<< HEAD
     st.write("Sending out the Zamboni ( getting data from Snowflake :snowflake: ) ...")
     
     # results = stats[ (stats['AWAY_TEAM_ID'] == input_away_team) & (stats['HOME_TEAM_ID'] == input_home_team) ]
@@ -121,12 +98,6 @@ if st.button('Faceoff'):
 
     # Embed the HTML into the Streamlit app
     components.html(viz, height=800, scrolling=True)
-=======
-    st.write("Getting data from Snowflake...")
-    st.code(stats, language="sql")
-    results = df[ (df['AWAY_TEAM_ID'] == input_away_team) & (df['HOME_TEAM_ID'] == input_home_team) ]
-    st.dataframe(results)
->>>>>>> b26f7023a669c4c7964f0ae30ce4d9c1cb768ca3
 
     st.subheader(f'Prediction Model Output for {input_away_team} Vs. {input_home_team}')
     st.write('''
@@ -134,7 +105,6 @@ if st.button('Faceoff'):
         including any future games that are not yet complete with data. From there, they're filtered down to retrieve the predicted outcomes and compared to the actual outcomes from the past matchups.
     '''
     )
-<<<<<<< HEAD
     st.write(
         '_NOTE_: For future games, the goals are assumed to be 0 for each team in the matchup so the model caters toward stats.',
         ' For this reason, sometimes you may see multiple records for the same game because predictions were made based upon a varying',
@@ -160,37 +130,11 @@ if st.button('Faceoff'):
     # Filter away and home team predictions for the result statement
     away_wins = predictions_overview[predictions_overview["PREDICTION"]==input_away_team]
     home_wins = predictions_overview[predictions_overview["PREDICTION"]==input_home_team]
-=======
-
-    st.write("Getting data from Snowflake...")
-    st.code(preds, language="sql")
-    predictions['AWAY_TEAM_ID'], predictions['HOME_TEAM_ID'], predictions["OUTCOME"], predictions["PREDICTION"] = predictions['AWAY_TEAM_ID'].replace(compare), predictions['HOME_TEAM_ID'].replace(compare), predictions["OUTCOME"].replace(compare), predictions["PREDICTION"].replace(compare)
-    filtered_predictions = predictions[ (predictions['AWAY_TEAM_ID'] == input_away_team) & (predictions['HOME_TEAM_ID'] == input_home_team) ]
-
-    away_wins = filtered_predictions[filtered_predictions["PREDICTION"]==input_away_team]
-    home_wins = filtered_predictions[filtered_predictions["PREDICTION"]==input_home_team]
-
-    st.write('Prediction Model Output')
-    predictions_df = filtered_predictions[['DATE', 'AWAY_TEAM_ID', 'HOME_TEAM_ID', 'PREDICTION']].drop_duplicates()
-    st.dataframe(predictions_df)
->>>>>>> b26f7023a669c4c7964f0ae30ce4d9c1cb768ca3
 
     if len(home_wins) > len(away_wins):
         st.write(f'Based on regular season games and stats, the model antipicates a _Home Team Victory_ for the {input_home_team} when matched with the contender.')
     elif len(home_wins) < len(away_wins):
         st.write(f'Based on regular season games and stats, the model antipicates a _Away Team Victory_ for the {input_away_team} when matched with the contender.')
-<<<<<<< HEAD
-
-=======
-    else:
-        st.write(f'Based on regular season games and stats, the model antipicates a _Draw_ ')
-
-    st.subheader("Analyze All Regular Season and Team Statistics on Your Own!")
-    full_dataset = pyg.to_html(predictions)
-    
-    # Embed the HTML into the Streamlit app
-    components.html(full_dataset, height=800, scrolling=True)
->>>>>>> b26f7023a669c4c7964f0ae30ce4d9c1cb768ca3
 else:
     st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
 
