@@ -105,9 +105,8 @@ if st.button('Faceoff'):
     '''
     )
     st.write(
-        '_NOTE_: For future games, the goals are assumed to be 0 for each team in the matchup so the model caters toward stats.',
-        ' For this reason, sometimes you may see multiple records for the same game because predictions were made based upon a varying',
-        ' stat for either team given multiple records according to a stat that may have changed. For example:'
+        '_NOTE_: Like the full dataset, sometimes you may see multiple records for the same game because predictions were made based upon varying',
+        ' statistics when goals were not available (for instance future games). In any case, there may be multiple records for either team given a statistic that may have changed and was kept historically. For example:'
     )
     st.markdown('''
         | DATE | AWAY_TEAM_ID | AWAY_GOALS | HOME_TEAM_ID | HOME_GOALS | ACTUAL | PREDICTION | AWAY_SOS (statistic in question) | HOME_SOS (statistic in question) |
@@ -116,7 +115,7 @@ if st.button('Faceoff'):
         | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Colorado Avalanche | 1 | 0 |       
                      
     ''')
-
+    st.write(" It is safest to assume when there are multiple records that whichever team appears most in predictions is the team of which the model favors. If there are equal predictions, the model is predicting an overall tie. ")
     st.write("")
     st.write("Predictions:")
     st.dataframe(predictions_overview, use_container_width=True)
