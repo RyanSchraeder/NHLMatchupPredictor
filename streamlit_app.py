@@ -2,6 +2,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import altair as alt
 
 import pygwalker as pyg
 import streamlit.components.v1 as components
@@ -56,6 +57,47 @@ def execute_queries(query):
 teams = execute_queries(teams())
 stats = execute_queries(stats(input_start_date, input_end_date))
 regular_season = execute_queries(regular_season(input_start_date, input_end_date))
+
+ranks = stats.groupby('AWAY_TEAM_ID')[['AWAY_W', 'AWAY_L', 'AWAY_OL']].max().reset_index().sort_values('AWAY_W', ascending=False)
+ranks = ranks.head()
+
+top_10 = stats.groupby('AWAY_TEAM_ID')[['AWAY_GOALS', 'HOME_GOALS']].sum().reset_index().sort_values('AWAY_GOALS', ascending=False)
+top_10 = top_10.head(10)
+
+st.subheader("Current Top 5 Ranks by Wins vs. Losses:")
+rank_chart = alt.Chart(ranks).mark_bar().encode(
+    x='AWAY_W',
+    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
+    color='AWAY_L'
+).interactive()
+
+tab1, tab2 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
+
+with tab1:
+    # Use the Streamlit theme.
+    # This is the default. So you can also omit the theme argument.
+    st.altair_chart(rank_chart, theme="streamlit", use_container_width=True)
+with tab2:
+    # Use the native Altair theme.
+    st.altair_chart(rank_chart, theme=None, use_container_width=True)
+
+st.subheader("\t\t\t\tTop 10 Scoring Teams by Away Goals and Home Goals")
+top10 = alt.Chart(top_10).mark_bar().encode(
+    x='AWAY_GOALS',
+    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
+    color='HOME_GOALS'
+).interactive()
+
+tab3, tab4 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
+
+with tab3:
+    # Use the Streamlit theme.
+    # This is the default. So you can also omit the theme argument.
+    st.altair_chart(top10, theme="streamlit", use_container_width=True)
+with tab4:
+    # Use the native Altair theme.
+    st.altair_chart(top10, theme=None, use_container_width=True)
+
 st.write("Season Schedule and Team Statistics Dataset:")
 st.dataframe(stats, use_container_width=True)
 
@@ -72,8 +114,11 @@ team_names = teams['AWAY_TEAM_ID'].unique()
 # Input Validation
 
 if input_away_team not in team_names or input_home_team not in team_names:
-    st.write(f"""Here's the list of teams""")
-    st.write(team_names)
+    if not len(input_away_team) or not len(input_home_team):
+        pass
+    else:
+        st.write(f"""We couldn't find the teams you've entered. Here's the list of teams: """)
+        st.write(team_names)
 
 else: 
     st.write(f"Awesome! We got both teams ready. Looks like you're looking for {input_away_team} Vs. {input_home_team}. Click Faceoff and let the games begin! :ice_hockey_stick_and_puck:")
