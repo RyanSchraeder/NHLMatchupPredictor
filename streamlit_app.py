@@ -71,15 +71,8 @@ rank_chart = alt.Chart(ranks).mark_bar().encode(
     color='AWAY_L'
 ).interactive()
 
-tab1, tab2 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
-
-with tab1:
-    # Use the Streamlit theme.
-    # This is the default. So you can also omit the theme argument.
-    st.altair_chart(rank_chart, theme="streamlit", use_container_width=True)
-with tab2:
-    # Use the native Altair theme.
-    st.altair_chart(rank_chart, theme=None, use_container_width=True)
+# Use the native Altair theme.
+st.altair_chart(rank_chart, theme=None, use_container_width=True)
 
 st.subheader("\t\t\t\tTop 10 Scoring Teams by Away Goals and Home Goals")
 top10 = alt.Chart(top_10).mark_bar().encode(
@@ -88,15 +81,8 @@ top10 = alt.Chart(top_10).mark_bar().encode(
     color='HOME_GOALS'
 ).interactive()
 
-tab3, tab4 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
-
-with tab3:
-    # Use the Streamlit theme.
-    # This is the default. So you can also omit the theme argument.
-    st.altair_chart(top10, theme="streamlit", use_container_width=True)
-with tab4:
-    # Use the native Altair theme.
-    st.altair_chart(top10, theme=None, use_container_width=True)
+# Use the native Altair theme.
+st.altair_chart(top10, theme=None, use_container_width=True)
 
 st.write("Season Schedule and Team Statistics Dataset:")
 st.dataframe(stats, use_container_width=True)
