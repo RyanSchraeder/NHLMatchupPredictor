@@ -43,13 +43,13 @@ if not input_end_date:
     input_end_date = datetime.now().date()
 
 # Get the current credentials
-conn = get_snowflake_connection('standard')
-cursor = conn.cursor()
+conn = get_snowflake_connection('snowpark')
+# print(conn)
 
 # Set function to query snowflake and return DataFrame
 @st.cache_data
 def execute_queries(query):
-    df = cursor.execute(query).fetch_pandas_all()
+    df = conn.sql(query).to_pandas()
     return df
 
 # Create the Stats Query and DataFrame

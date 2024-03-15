@@ -15,6 +15,7 @@ def get_snowflake_connection(method):
 
         params = {
             "user": os.getenv('SFUSER'),
+            "role": os.getenv('SFROLE'),
             "password": os.getenv('SFPW'),
             "account": os.getenv('SNOWFLAKE_ACCT'),
             "warehouse": os.getenv('SFWH'),
@@ -40,7 +41,7 @@ def get_snowflake_connection(method):
 
             return conn
 
-        if method == 'spark':
+        if method == 'snowpark':
             session = Session.builder.configs(params).create()
             return session
 
