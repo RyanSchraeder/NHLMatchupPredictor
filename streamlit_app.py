@@ -109,14 +109,15 @@ if st.button('Faceoff'):
         ' statistics when goals were not available (for instance future games). In any case, there may be multiple records for either team given a statistic that may have changed and was kept historically. For example:'
     )
     st.markdown('''
+        
         | DATE | AWAY_TEAM_ID | AWAY_GOALS | HOME_TEAM_ID | HOME_GOALS | ACTUAL | PREDICTION | AWAY_SOS (statistic in question) | HOME_SOS (statistic in question) |
-        | ---  | ----------   | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | -------- |
-        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Calgary Flames | 0 | 1 |
-        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Colorado Avalanche | 1 | 0 |       
-                     
+        | ---  | ------------ | ---------- | ------------ | ---------- | ------ | ---------- | -------------------------------- | -------------------------------- |
+        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Calgary Flames | 0                                | 1 |
+        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Colorado Avalanche | 1                           | 0 |   
+                    
+        > It is safest to assume when there are multiple records that whichever team appears most in predictions is the team of which the model favors. If there are equal predictions, the model is predicting an overall tie. ")
     ''')
-    st.write(" It is safest to assume when there are multiple records that whichever team appears most in predictions is the team of which the model favors. If there are equal predictions, the model is predicting an overall tie. ")
-    st.write("")
+    
     st.write("Predictions:")
     st.dataframe(predictions_overview, use_container_width=True)
 
