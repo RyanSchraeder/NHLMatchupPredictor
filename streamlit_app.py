@@ -34,7 +34,7 @@ if not input_home_team or input_home_team == '':
     st.write("Please enter home team.")
 
 input_start_date = st.text_input(label="Start Date (Defaults to Last 30 Days, this field is optional.)")
-input_end_date = st.text_input(label="End Date (Defaults to Current Day, this field is optional.)")
+input_end_date = st.text_input(label="End Date (Defaults to Current Day, this field is optional. Can be up to 30 days into the future as well.)")
 
 # Dates set
 if not input_start_date:
@@ -57,35 +57,6 @@ def execute_queries(query):
 teams = execute_queries(teams())
 stats = execute_queries(stats(input_start_date, input_end_date))
 regular_season = execute_queries(regular_season(input_start_date, input_end_date))
-
-ranks = stats.groupby('AWAY_TEAM_ID')[['AWAY_W', 'AWAY_L', 'AWAY_OL']].max().reset_index().sort_values('AWAY_W', ascending=False)
-ranks = ranks.head()
-
-top_10 = stats.groupby('AWAY_TEAM_ID')[['AWAY_GOALS', 'HOME_GOALS']].sum().reset_index().sort_values('AWAY_GOALS', ascending=False)
-top_10 = top_10.head(10)
-
-st.subheader("Current Top 5 Ranks by Wins vs. Losses:")
-rank_chart = alt.Chart(ranks).mark_bar().encode(
-    x='AWAY_W',
-    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
-    color='AWAY_L'
-).interactive()
-
-# Use the native Altair theme.
-st.altair_chart(rank_chart, theme=None, use_container_width=True)
-
-st.subheader("\t\t\t\tTop 10 Scoring Teams by Away Goals and Home Goals")
-top10 = alt.Chart(top_10).mark_bar().encode(
-    x='AWAY_GOALS',
-    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
-    color='HOME_GOALS'
-).interactive()
-
-# Use the native Altair theme.
-st.altair_chart(top10, theme=None, use_container_width=True)
-
-st.write("Season Schedule and Team Statistics Dataset:")
-st.dataframe(stats, use_container_width=True)
 
 # Create the Predictions Query and DataFrame
 predictions = execute_queries(predictions_full_query(input_start_date, input_end_date))
@@ -111,15 +82,20 @@ else:
 
 # Generate all information. Start with a button
 if st.button('Faceoff'):
+
+    st.subheader(f'Prediction Model Output for {input_away_team} Vs. {input_home_team}')
+
+    st.dataframe(predictions_overview, use_container_width=True)
+    if predictions_overview["BAD_PREDICTION_FLAG"] == True:
+        st.write("Sorry about that! It looks like the model went out of the way on this one. :|")
+
     # Regular Season
     st.subheader("Regular Season Data")
     st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
     st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
-    
-    # results = stats[ (stats['AWAY_TEAM_ID'] == input_away_team) & (stats['HOME_TEAM_ID'] == input_home_team) ]
 
     # Display the dataset to enable interactive analysis
-    st.subheader("Build Your Own Analysis.")
+    st.subheader("Explore the Data")
     st.write("""
         This Tableau-like display contains a dataset consisting of regular season, playoffs, and team stats along with the predicted winners of each game.
         Use it to build your own visualizations to dive deeper into the data for all predictions.
@@ -129,28 +105,6 @@ if st.button('Faceoff'):
     # Embed the HTML into the Streamlit app
     components.html(viz, height=800, scrolling=True)
 
-    st.subheader(f'Prediction Model Output for {input_away_team} Vs. {input_home_team}')
-    st.write('''
-        The predictions are appended to the season schedule based upon its input data, 
-        including any future games that are not yet complete with data. From there, they're filtered down to retrieve the predicted outcomes and compared to the actual outcomes from the past matchups.
-    '''
-    )
-    st.write(
-        '_NOTE_: Like the full dataset, sometimes you may see multiple records for the same game because predictions were made based upon varying',
-        ' statistics when goals were not available (for instance future games). In any case, there may be multiple records for either team given a statistic that may have changed and was kept historically. For example:'
-    )
-    st.markdown('''
-        
-        | DATE | AWAY_TEAM_ID | AWAY_GOALS | HOME_TEAM_ID | HOME_GOALS | ACTUAL | PREDICTION | AWAY_SOS (statistic in question) | HOME_SOS (statistic in question) |
-        | ---  | ------------ | ---------- | ------------ | ---------- | ------ | ---------- | -------------------------------- | -------------------------------- |
-        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Calgary Flames | 0                                | 1 |
-        | 2024-03-12 | Colorado Avalanche | 0 | Calgary Flames | 0 | UNKNOWN | Colorado Avalanche | 1                           | 0 |   
-                    
-        > It is safest to assume when there are multiple records that whichever team appears most in predictions is the team of which the model favors. If there are equal predictions, the model is predicting an overall tie. ")
-    ''')
-    
-    st.write("Predictions:")
-    st.dataframe(predictions_overview, use_container_width=True)
 
     if not len(predictions_overview):
         st.write("It looks like those teams didn't face each other in your input time range. Try again. Here are the teams with games that occurred then:")
@@ -163,3 +117,40 @@ else:
 if st.button("Reset", type="primary"):
     st.write('Sending out the Zamboni. The prediction results will clear momentarily.')
 
+
+ranks = stats.groupby('AWAY_TEAM_ID')[['AWAY_W', 'AWAY_L', 'AWAY_OL']].max().reset_index().sort_values('AWAY_W', ascending=False)
+ranks = ranks.head()
+
+top_10 = stats.groupby('AWAY_TEAM_ID')[['AWAY_GOALS', 'HOME_GOALS']].sum().reset_index().sort_values('AWAY_GOALS', ascending=False)
+top_10 = top_10.head(10)
+
+st.subheader("Current Season Analysis")
+st.write("Current Top 5 Ranks by Wins vs. Losses")
+rank_chart = alt.Chart(ranks).mark_bar().encode(
+    x='AWAY_W',
+    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
+    color='AWAY_L'
+).interactive()
+
+# Use the native Altair theme.
+st.altair_chart(rank_chart, theme=None, use_container_width=True)
+
+st.write("\t\t\t\tTop 10 Scoring Teams by Away Goals and Home Goals")
+top10 = alt.Chart(top_10).mark_bar().encode(
+    x='AWAY_GOALS',
+    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
+    color='HOME_GOALS'
+).interactive()
+
+# Use the native Altair theme.
+st.altair_chart(top10, theme=None, use_container_width=True)
+
+st.write("Season Schedule and Team Statistics")
+st.dataframe(stats, use_container_width=True)
+
+# Display Model Evaluation
+model_stats = execute_queries("SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_PREDICTOR_SCORING;")
+st.subheader("Current Prediction Model Evaluation Metrics")
+st.write(f"Upon test data with a sample size of 30%, the model predicts the winner correctly {round(model_stats['accuracy'].mean() * 100, 2)}% often.")
+st.write("Instead of predicting win or loss in favor of one team, both sides are evaluated and the probability of each team winning given the matchup is calculated. If a team's probability of winning is greater than 50%, the model will label that team the winner.")
+st.dataframe(model_stats)
