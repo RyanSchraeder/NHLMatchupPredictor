@@ -66,11 +66,11 @@ predictions_overview = execute_queries(predictions_overview_query(input_start_da
 # Drop unnecessary columns from team stats
 stats.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
 
-team_names = teams['AWAY_TEAM_ID'].unique()
+team_names = [name.lower() for name in teams['AWAY_TEAM_ID'].unique()]
 
 # Input Validation
 
-if input_away_team not in team_names or input_home_team not in team_names:
+if input_away_team.lower() not in team_names or input_home_team.lower() not in team_names:
     if not len(input_away_team) or not len(input_home_team):
         pass
     else:
@@ -86,7 +86,8 @@ if st.button('Faceoff'):
     st.subheader(f'Prediction Model Output for {input_away_team} Vs. {input_home_team}')
 
     st.dataframe(predictions_overview, use_container_width=True)
-    if predictions_overview["BAD_PREDICTION_FLAG"] == True:
+    res = {k: v for k, v in predictions_overview.to_dict().items()}
+    if res["BAD_PREDICTION_FLAG"] == 1:
         st.write("Sorry about that! It looks like the model went out of the way on this one. :|")
 
     # Regular Season
