@@ -2,14 +2,14 @@ import streamlit as st
 
 def stats(start, end):
     return f"""
-        SELECT DISTINCT * FROM NHL_STATS.RAW.SEASONAL_METRICS_AGG
+        SELECT * FROM NHL_STATS.RAW.SEASONAL_METRICS_AGG
         WHERE GAME_DATE BETWEEN '{start}' and '{end}'
         ORDER BY DATE DESC
     """
 
 def teams():
     return f"""
-        SELECT DISTINCT TEAM FROM NHL_STATS.RAW.TEAMS
+        SELECT * FROM NHL_STATS.RAW.TEAMS
     """
 
 def regular_season(start, end):
