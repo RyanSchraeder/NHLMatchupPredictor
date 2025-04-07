@@ -124,7 +124,7 @@ st.write("Current Top 10 Ranking Teams by Wins vs. Losses")
 st.dataframe(top5, use_container_width=True)
              
 # Use the native Altair theme.
-st.altair_chart(rank_chart, theme=None, use_container_width=True)
+# st.altair_chart(rank_chart, theme=None, use_container_width=True)
 
 st.write("\t\t\t\tScoring Percentages by Away Goals and Home Goals")
 st.write(
@@ -133,11 +133,7 @@ st.write(
     "- If zero, the team has scored equal to their opponents on average. \n",
     "- If positive, the team has scored more than their opponents on average. "
 )
-scoring = alt.Chart(scoring).mark_bar().encode(
-    x='TEAM',
-    y=alt.Y('SCORING_PCT').sort('-x'),
-    color='SCORING_RANK'
-).interactive()
+st.dataframe(scoring, use_container_width=True)
 
 # Use the native Altair theme.
 st.altair_chart(scoring, theme=None, use_container_width=True)
