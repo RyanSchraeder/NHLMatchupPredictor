@@ -33,15 +33,15 @@ st.title("NHL Season Analysis  :ice_hockey_stick_and_puck:")
 # if not input_home_team or input_home_team == '':
 #     st.write("Please enter home team.")
 
-# input_start_date = st.text_input(label="Start Date (Defaults to Last 30 Days, this field is optional.)")
-# input_end_date = st.text_input(label="End Date (Defaults to Current Day, this field is optional. Can be up to 30 days into the future as well.)")
+input_start_date = st.text_input(label="Start Date (Defaults to Last 30 Days, this field is optional.)")
+input_end_date = st.text_input(label="End Date (Defaults to Current Day, this field is optional. Can be up to 30 days into the future as well.)")
 
-# # Dates set
-# if not input_start_date:
-#     input_start_date = datetime.now().date() - timedelta(days=30)
+# Dates set
+if not input_start_date:
+    input_start_date = datetime.now().date() - timedelta(days=30)
 
-# if not input_end_date:
-#     input_end_date = datetime.now().date()
+if not input_end_date:
+    input_end_date = datetime.now().date()
 
 
 # Set function to query snowflake and return DataFrame
