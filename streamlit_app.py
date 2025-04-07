@@ -12,7 +12,10 @@ from datetime import datetime, timedelta
 from src.connectors import get_snowflake_connection
 
 # Queries
-from queries import stats, teams, predictions_full_query, predictions_overview_query, regular_season
+from queries import *
+
+# Snowflake Connection
+conn = st.connection("snowflake")
 
 # Config
 st.set_page_config(
@@ -43,30 +46,29 @@ if not input_start_date:
 if not input_end_date:
     input_end_date = datetime.now().date()
 
-# Get the current credentials
-conn = get_snowflake_connection('standard')
-# print(conn)
 
 # Set function to query snowflake and return DataFrame
 @st.cache_data
 def execute_queries(query):
-    df = conn.sql(query).to_pandas()
+    df = conn.query(query, show_spinner=True)
     return df
 
 # Create the Stats Query and DataFrame
 teams = execute_queries(teams())
 stats = execute_queries(stats(input_start_date, input_end_date))
 regular_season = execute_queries(regular_season(input_start_date, input_end_date))
+top5 = execute_queries(team_ranks())
+scoring = execute_queries(scoring()) 
 
 # Create the Predictions Query and DataFrame
-predictions = execute_queries(predictions_full_query(input_start_date, input_end_date))
-predictions_overview = execute_queries(predictions_overview_query(input_start_date, input_end_date, input_away_team, input_home_team))
+# predictions = execute_queries(predictions_full_query(input_start_date, input_end_date))
+# predictions_overview = execute_queries(predictions_overview_query(input_start_date, input_end_date, input_away_team, input_home_team))
 
 # Prepare data transformations for input validation
 # Drop unnecessary columns from team stats
-stats.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
+# stats.drop(['HOME_TEAM', 'AWAY_TEAM', 'AWAY_SRS', 'HOME_SRS', 'AWAY_RGREC', 'HOME_RGREC'], axis=1, inplace=True)
 
-team_names = [name.lower() for name in teams['AWAY_TEAM_ID'].unique()]
+team_names = [name.lower() for name in teams['TEAM'].unique()]
 
 # Input Validation
 
@@ -83,12 +85,12 @@ else:
 # Generate all information. Start with a button
 if st.button('Faceoff'):
 
-    st.subheader(f'Prediction Model Output for {input_away_team} Vs. {input_home_team}')
+    # st.subheader(f'Prediction Model Output for {input_away_team} Vs. {input_home_team}')
 
-    st.dataframe(predictions_overview, use_container_width=True)
-    res = {k: v for k, v in predictions_overview.to_dict().items()}
-    if res["BAD_PREDICTION_FLAG"] == 1:
-        st.write("Sorry about that! It looks like the model went out of the way on this one. :|")
+    # st.dataframe(predictions_overview, use_container_width=True)
+    # res = {k: v for k, v in predictions_overview.to_dict().items()}
+    # if res["BAD_PREDICTION_FLAG"] == 1:
+    #     st.write("Sorry about that! It looks like the model went out of the way on this one. :|")
 
     # Regular Season
     st.subheader("Regular Season Data")
@@ -107,10 +109,10 @@ if st.button('Faceoff'):
     components.html(viz, height=800, scrolling=True)
 
 
-    if not len(predictions_overview):
-        st.write("It looks like those teams didn't face each other in your input time range. Try again. Here are the teams with games that occurred then:")
-        away, home = predictions["AWAY_TEAM_ID"].unique(), predictions["HOME_TEAM_ID"].unique()
-        st.dataframe(pd.DataFrame(away, home), use_container_width=True)
+    # if not len(predictions_overview):
+    #     st.write("It looks like those teams didn't face each other in your input time range. Try again. Here are the teams with games that occurred then:")
+    #     away, home = predictions["AWAY_TEAM_ID"].unique(), predictions["HOME_TEAM_ID"].unique()
+    #     st.dataframe(pd.DataFrame(away, home), use_container_width=True)
         
 else:
     st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
@@ -118,40 +120,39 @@ else:
 if st.button("Reset", type="primary"):
     st.write('Sending out the Zamboni. The prediction results will clear momentarily.')
 
-
-ranks = stats.groupby('AWAY_TEAM_ID')[['AWAY_W', 'AWAY_L', 'AWAY_OL']].max().reset_index().sort_values('AWAY_W', ascending=False)
-ranks = ranks.head()
-
-top_10 = stats.groupby('AWAY_TEAM_ID')[['AWAY_GOALS', 'HOME_GOALS']].sum().reset_index().sort_values('AWAY_GOALS', ascending=False)
-top_10 = top_10.head(10)
-
 st.subheader("Current Season Analysis")
 st.write("Current Top 5 Ranks by Wins vs. Losses")
-rank_chart = alt.Chart(ranks).mark_bar().encode(
-    x='AWAY_W',
-    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
-    color='AWAY_L'
+rank_chart = alt.Chart(top5).mark_bar().encode(
+    x='OVERALL_WINS',
+    y=alt.Y('TEAM').sort('-x'),
+    color='OVERALL_LOSSES'
 ).interactive()
 
 # Use the native Altair theme.
 st.altair_chart(rank_chart, theme=None, use_container_width=True)
 
-st.write("\t\t\t\tTop 10 Scoring Teams by Away Goals and Home Goals")
-top10 = alt.Chart(top_10).mark_bar().encode(
-    x='AWAY_GOALS',
-    y=alt.Y('AWAY_TEAM_ID').sort('-x'),
-    color='HOME_GOALS'
+st.write("\t\t\t\tScoring Percentages by Away Goals and Home Goals")
+st.write(
+    "Calculated using the percentage of goals scored in favor of teams.\n",
+    "- If that percentage is negative, the team has scored less than their opponents on average. \n",
+    "- If zero, the team has scored equal to their opponents on average. \n",
+    "- If positive, the team has scored more than their opponents on average. "
+)
+scoring = alt.Chart(scoring).mark_bar().encode(
+    x='TEAM',
+    y=alt.Y('SCORING_PCT').sort('-x'),
+    color='SCORING_RANK'
 ).interactive()
 
 # Use the native Altair theme.
-st.altair_chart(top10, theme=None, use_container_width=True)
+st.altair_chart(scoring, theme=None, use_container_width=True)
 
 st.write("Season Schedule and Team Statistics")
 st.dataframe(stats, use_container_width=True)
 
 # Display Model Evaluation
-model_stats = execute_queries("SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_PREDICTOR_SCORING;")
-st.subheader("Current Prediction Model Evaluation Metrics")
-st.write(f"Upon test data with a sample size of 30%, the model predicts the winner correctly {round(model_stats['accuracy'].mean() * 100, 2)}% often.")
-st.write("Instead of predicting win or loss in favor of one team, both sides are evaluated and the probability of each team winning given the matchup is calculated. If a team's probability of winning is greater than 50%, the model will label that team the winner.")
-st.dataframe(model_stats)
+# model_stats = execute_queries("SELECT * FROM PC_DBT_DB.NHL_SEASON_STATS_AGG.NHL_PREDICTOR_SCORING;")
+# st.subheader("Current Prediction Model Evaluation Metrics")
+# st.write(f"Upon test data with a sample size of 30%, the model predicts the winner correctly {round(model_stats['accuracy'].mean() * 100, 2)}% often.")
+# st.write("Instead of predicting win or loss in favor of one team, both sides are evaluated and the probability of each team winning given the matchup is calculated. If a team's probability of winning is greater than 50%, the model will label that team the winner.")
+# st.dataframe(model_stats)
