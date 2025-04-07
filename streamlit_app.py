@@ -119,9 +119,9 @@ if st.button("Reset", type="primary"):
 
 st.subheader("Current Season Analysis")
 st.write("Current Top 10 Ranking Teams by Wins vs. Losses")
-fig = px.bar(top10, x="TEAM", y=["OVERALL_WINS", "OVERALL_LOSSES", "OVERTIME_LOSSES"])
+fig = px.histogram(top10, x="TEAM", y=["OVERALL_WINS", "OVERALL_LOSSES", "OVERTIME_LOSSES"])
 st.plotly_chart(fig, key="top10teams")
-scores = px.bar(top10, x="TEAM", y=["GOALS_FOR", "GOALS_AGAINST"])
+scores = px.histogram(top10, x="TEAM", y=["GOALS_FOR", "GOALS_AGAINST"])
 st.plotly_chart(scores, key="top10teamsscoring")
 
 st.dataframe(top10, use_container_width=True)
