@@ -121,12 +121,8 @@ if st.button("Reset", type="primary"):
 
 st.subheader("Current Season Analysis")
 st.write("Current Top 5 Ranks by Wins vs. Losses")
-rank_chart = alt.Chart(top5).mark_bar().encode(
-    x='OVERALL_WINS',
-    y=alt.Y('TEAM').sort('-x'),
-    color='OVERALL_LOSSES'
-).interactive()
-
+st.dataframe(top5, use_container_width=True)
+             
 # Use the native Altair theme.
 st.altair_chart(rank_chart, theme=None, use_container_width=True)
 
