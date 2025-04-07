@@ -9,3 +9,4 @@ snowflake-snowpark-python
 python-dotenv
 cryptography==38.0.4
 pyopenssl==22.1.0
+streamlit[snowflake]
