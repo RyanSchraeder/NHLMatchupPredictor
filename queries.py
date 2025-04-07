@@ -11,7 +11,20 @@ def teams():
     return f"""
         SELECT * FROM NHL_STATS.RAW.TEAMS
     """
-
+def team_ranks():
+    return f"""
+        WITH RANKS AS (
+            SELECT 
+                TEAM, 
+                DENSE_RANK() OVER( (OVERALL_WINS - OVERALL_LOSSES) DESC ) AS LEAGUE_RANK
+            FROM NHL_STATS.RAW.TEAMS
+        )
+        SELECT * 
+        FROM RANKS 
+        WHERE LEAGUE_RANK <= 5
+        ORDER BY LEAGUE_RANK DESC
+    """
+        
 def regular_season(start, end):
     return f"""
         SELECT *
