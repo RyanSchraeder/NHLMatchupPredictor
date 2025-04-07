@@ -105,7 +105,7 @@ if st.button('Faceoff'):
     # viz = pyg.to_html(regular_season)
 
     # Embed the HTML into the Streamlit app
-    components.html(viz, height=800, scrolling=True)
+    # components.html(viz, height=800, scrolling=True)
 
 
     # if not len(predictions_overview):
