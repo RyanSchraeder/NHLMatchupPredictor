@@ -4,11 +4,9 @@ Streamlit app utilizing my data sourced from Snowflake to provide a generated an
 [https://nhlseasonoverview.streamlit.app/](https://nhlseasonoverview.streamlit.app/)
 
 Usage: 
-1. Enter Away Team
-2. Enter Home Team
-3. Enter Start Date of Date Range
-4. Enter End Date of Date Range
-5. Click Faceoff!
+1. Enter Start Date of Season
+2. Enter End Date of Season
+3. Click Faceoff!
 
 
 
