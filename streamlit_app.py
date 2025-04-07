@@ -25,23 +25,23 @@ st.set_page_config(
 # Write directly to the app
 st.title("NHL Season Analysis  :ice_hockey_stick_and_puck:")
 
-input_away_team = st.text_input(label='Away Team:')
-if not input_away_team or input_away_team == '':
-    st.write("Please enter away team.")
+# input_away_team = st.text_input(label='Away Team:')
+# if not input_away_team or input_away_team == '':
+#     st.write("Please enter away team.")
 
-input_home_team = st.text_input(label="Home Team:")
-if not input_home_team or input_home_team == '':
-    st.write("Please enter home team.")
+# input_home_team = st.text_input(label="Home Team:")
+# if not input_home_team or input_home_team == '':
+#     st.write("Please enter home team.")
 
-input_start_date = st.text_input(label="Start Date (Defaults to Last 30 Days, this field is optional.)")
-input_end_date = st.text_input(label="End Date (Defaults to Current Day, this field is optional. Can be up to 30 days into the future as well.)")
+# input_start_date = st.text_input(label="Start Date (Defaults to Last 30 Days, this field is optional.)")
+# input_end_date = st.text_input(label="End Date (Defaults to Current Day, this field is optional. Can be up to 30 days into the future as well.)")
 
-# Dates set
-if not input_start_date:
-    input_start_date = datetime.now().date() - timedelta(days=30)
+# # Dates set
+# if not input_start_date:
+#     input_start_date = datetime.now().date() - timedelta(days=30)
 
-if not input_end_date:
-    input_end_date = datetime.now().date()
+# if not input_end_date:
+#     input_end_date = datetime.now().date()
 
 
 # Set function to query snowflake and return DataFrame
@@ -69,15 +69,15 @@ team_names = [name.lower() for name in teams['TEAM'].unique()]
 
 # Input Validation
 
-if input_away_team.lower() not in team_names or input_home_team.lower() not in team_names:
-    if not len(input_away_team) or not len(input_home_team):
-        pass
-    else:
-        st.write(f"""We couldn't find the teams you've entered. Here's the list of teams: """)
-        st.write(team_names)
+# if input_away_team.lower() not in team_names or input_home_team.lower() not in team_names:
+#     if not len(input_away_team) or not len(input_home_team):
+#         pass
+#     else:
+#         st.write(f"""We couldn't find the teams you've entered. Here's the list of teams: """)
+#         st.write(team_names)
 
-else: 
-    st.write(f"Awesome! We got both teams ready. Looks like you're looking for {input_away_team} Vs. {input_home_team}. Click Faceoff and let the games begin! :ice_hockey_stick_and_puck:")
+# else: 
+#     st.write(f"Awesome! We got both teams ready. Looks like you're looking for {input_away_team} Vs. {input_home_team}. Click Faceoff and let the games begin! :ice_hockey_stick_and_puck:")
 
 # Generate all information. Start with a button
 if st.button('Faceoff'):
