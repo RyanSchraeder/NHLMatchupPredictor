@@ -14,21 +14,21 @@ def teams():
 def team_ranks():
     return f"""
         WITH WIN_LOSS_RATIOS AS (
-            SELECT 
-                TEAM, 
-                OVERALL_WINS - OVERALL_LOSSES AS WIN_LOSS_RATIO
-            FROM NHL_STATS.RAW.TEAMS
+            SELECT *,
+                OVERALL_WINS / (OVERALL_WINS + OVERALL_LOSSES) * 1.0 AS WIN_LOSS_RATIO
+            FROM TEAMS
+            ORDER BY WIN_LOSS_RATIO
         ), RANKS AS (
             SELECT 
-                TEAM, 
-                WIN_LOSS_RATIO,
-                DENSE_RANK() OVER(ORDER BY WIN_LOSS_RATIO DESC) AS LEAGUE_RANK
+                *, 
+                RANK() OVER(ORDER BY WIN_LOSS_RATIO DESC) AS LEAGUE_RANK
             FROM WIN_LOSS_RATIOS
         )
         SELECT * 
         FROM RANKS 
-        WHERE LEAGUE_RANK <= 5
-        ORDER BY LEAGUE_RANK DESC
+        WHERE LEAGUE_RANK <= 10
+        ORDER BY LEAGUE_RANK 
+        ;
     """
 def scoring():
     return f"""
