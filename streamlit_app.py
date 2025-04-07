@@ -2,9 +2,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import altair as alt
-
-import pygwalker as pyg
+import plotly.express as px
 import streamlit.components.v1 as components
 
 import os
@@ -56,7 +54,7 @@ def execute_queries(query):
 teams = execute_queries(teams())
 stats = execute_queries(stats(input_start_date, input_end_date))
 regular_season = execute_queries(regular_season(input_start_date, input_end_date))
-top5 = execute_queries(team_ranks())
+top10 = execute_queries(team_ranks())
 scoring = execute_queries(scoring()) 
 
 # Create the Predictions Query and DataFrame
@@ -121,7 +119,10 @@ if st.button("Reset", type="primary"):
 
 st.subheader("Current Season Analysis")
 st.write("Current Top 10 Ranking Teams by Wins vs. Losses")
-st.dataframe(top5, use_container_width=True)
+fig = px.histogram(top10, x="TEAM", y=["OVERALL_WINS", "OVERALL_LOSSES", "OVERTIME_LOSSES"])
+fig.show()
+
+st.dataframe(top10, use_container_width=True)
              
 # Use the native Altair theme.
 # st.altair_chart(rank_chart, theme=None, use_container_width=True)
@@ -133,6 +134,7 @@ st.write(
     "- If zero, the team has scored equal to their opponents on average. \n",
     "- If positive, the team has scored more than their opponents on average. "
 )
+fig = px.histogram(scoring, x="TEAM", y="SCORING_PCT")
 st.dataframe(scoring, use_container_width=True)
 
 # Use the native Altair theme.
