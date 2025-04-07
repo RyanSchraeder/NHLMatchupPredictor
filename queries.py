@@ -24,7 +24,40 @@ def team_ranks():
         WHERE LEAGUE_RANK <= 5
         ORDER BY LEAGUE_RANK DESC
     """
-        
+def scoring():
+    return f"""
+        WITH AWAY_SCORING AS (
+            SELECT 
+                VISITOR,  
+                SUM(VISITOR_GOALS) AS SCORED_FOR, 
+                SUM(HOME_GOALS) AS SCORED_AGAINST
+            FROM NHL_STATS.RAW.SEASONAL_METRICS_AGG
+            GROUP BY 1
+        ), HOME_SCORING AS (
+            SELECT 
+                HOME,  
+                SUM(HOME_GOALS) AS SCORED_FOR, 
+                SUM(VISITOR_GOALS) AS SCORED_AGAINST
+            FROM NHL_STATS.RAW.SEASONAL_METRICS_AGG
+            GROUP BY 1
+        ), GROUPED AS (
+            SELECT 
+                A.VISITOR AS TEAM, 
+                A.SCORED_FOR AS AWAY_GOALS_FOR, 
+                A.SCORED_AGAINST AS AWAY_GOALS_AGAINST, 
+                B.SCORED_FOR AS HOME_GOALS_FOR, 
+                B.SCORED_AGAINST AS HOME_GOALS_AGAINST
+            FROM AWAY_SCORING A
+            JOIN HOME_SCORING B
+            ON A.VISITOR = B.HOME
+        )
+        SELECT 
+            TEAM, 
+            ROUND( ((AWAY_GOALS_FOR + HOME_GOALS_FOR) / (AWAY_GOALS_AGAINST + HOME_GOALS_AGAINST) - 1.0) * 100, 2 ) AS SCORING_PCT,
+            DENSE_RANK() OVER(ORDER BY SCORING_PCT DESC) SCORING_RANK
+        FROM GROUPED 
+    """
+    
 def regular_season(start, end):
     return f"""
         SELECT *
