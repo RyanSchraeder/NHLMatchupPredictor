@@ -13,12 +13,16 @@ def teams():
     """
 def team_ranks():
     return f"""
-        WITH RANKS AS (
+        WITH WIN_LOSS_RATIOS AS (
             SELECT 
                 TEAM, 
-                OVERALL_WINS - OVERALL_LOSSES AS WIN_LOSS_RATIO,
-                DENSE_RANK() OVER(WIN_LOSS_RATIO DESC) AS LEAGUE_RANK
+                OVERALL_WINS - OVERALL_LOSSES AS WIN_LOSS_RATIO
             FROM NHL_STATS.RAW.TEAMS
+        ), RANKS AS (
+            SELECT 
+                TEAM, WIN_LOSS_RATIO,
+                DENSE_RANK() OVER(WIN_LOSS_RATIO DESC) AS LEAGUE_RANK
+            FROM WIN_LOSS_RATIOS
         )
         SELECT * 
         FROM RANKS 
