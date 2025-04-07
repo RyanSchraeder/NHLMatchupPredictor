@@ -120,7 +120,7 @@ if st.button("Reset", type="primary"):
 st.subheader("Current Season Analysis")
 st.write("Current Top 10 Ranking Teams by Wins vs. Losses")
 fig = px.histogram(top10, x="TEAM", y=["OVERALL_WINS", "OVERALL_LOSSES", "OVERTIME_LOSSES"])
-fig.show()
+st.plotly_chart(fig, key="top10teams")
 
 st.dataframe(top10, use_container_width=True)
              
@@ -135,10 +135,8 @@ st.write(
     "- If positive, the team has scored more than their opponents on average. "
 )
 fig = px.histogram(scoring, x="TEAM", y="SCORING_PCT")
+st.plotly_chart(fig, key="scoring_percentages")
 st.dataframe(scoring, use_container_width=True)
-
-# Use the native Altair theme.
-st.altair_chart(scoring, theme=None, use_container_width=True)
 
 st.write("Season Schedule and Team Statistics")
 st.dataframe(stats, use_container_width=True)
