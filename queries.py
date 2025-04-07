@@ -4,7 +4,7 @@ def stats(start, end):
     return f"""
         SELECT * FROM NHL_STATS.RAW.SEASONAL_METRICS_AGG
         WHERE GAME_DATE BETWEEN '{start}' and '{end}'
-        ORDER BY DATE DESC
+        ORDER BY GAME_DATE DESC
     """
 
 def teams():
@@ -62,8 +62,8 @@ def regular_season(start, end):
     return f"""
         SELECT *
         FROM NHL_STATS.RAW.GAMES
-        WHERE DATE BETWEEN '{start}' and '{end}'
-        ORDER BY DATE DESC
+        WHERE GAME_DATE BETWEEN '{start}' and '{end}'
+        ORDER BY GAME_DATE DESC
     """
     
 # def predictions_overview_query(start, end, away, home):
