@@ -9,7 +9,6 @@ import streamlit.components.v1 as components
 
 import os
 from datetime import datetime, timedelta
-from src.connectors import get_snowflake_connection
 
 # Queries
 from queries import *
