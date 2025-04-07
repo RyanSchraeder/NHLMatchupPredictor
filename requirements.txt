@@ -1,8 +1,8 @@
 pandas
 numpy
 cachetools
-pydantic
 pygwalker
+plotly
 snowflake-connector-python
 snowflake-connector-python[pandas]
 snowflake-snowpark-python
