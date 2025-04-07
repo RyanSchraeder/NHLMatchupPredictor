@@ -16,7 +16,7 @@ def team_ranks():
         WITH RANKS AS (
             SELECT 
                 TEAM, 
-                DENSE_RANK() OVER( (OVERALL_WINS - OVERALL_LOSSES) DESC ) AS LEAGUE_RANK
+                DENSE_RANK() OVER(OVERALL_WINS - OVERALL_LOSSES DESC) AS LEAGUE_RANK
             FROM NHL_STATS.RAW.TEAMS
         )
         SELECT * 
