@@ -20,8 +20,9 @@ def team_ranks():
             FROM NHL_STATS.RAW.TEAMS
         ), RANKS AS (
             SELECT 
-                TEAM, WIN_LOSS_RATIO,
-                DENSE_RANK() OVER(WIN_LOSS_RATIO DESC) AS LEAGUE_RANK
+                TEAM, 
+                WIN_LOSS_RATIO,
+                DENSE_RANK() OVER(ORDER BY WIN_LOSS_RATIO DESC) AS LEAGUE_RANK
             FROM WIN_LOSS_RATIOS
         )
         SELECT * 
