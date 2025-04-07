@@ -44,7 +44,7 @@ if not input_end_date:
     input_end_date = datetime.now().date()
 
 # Get the current credentials
-conn = get_snowflake_connection('snowpark')
+conn = get_snowflake_connection('standard')
 # print(conn)
 
 # Set function to query snowflake and return DataFrame
