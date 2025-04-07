@@ -25,7 +25,7 @@ st.set_page_config(
 )
 
 # Write directly to the app
-st.title("NHL Matchup Predictor :ice_hockey_stick_and_puck:")
+st.title("NHL Season Analysis  :ice_hockey_stick_and_puck:")
 
 input_away_team = st.text_input(label='Away Team:')
 if not input_away_team or input_away_team == '':
@@ -97,12 +97,12 @@ if st.button('Faceoff'):
     st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
 
     # Display the dataset to enable interactive analysis
-    st.subheader("Explore the Data")
-    st.write("""
-        This Tableau-like display contains a dataset consisting of regular season, playoffs, and team stats along with the predicted winners of each game.
-        Use it to build your own visualizations to dive deeper into the data for all predictions.
-    """)
-    viz = pyg.to_html(regular_season)
+    # st.subheader("Explore the Data")
+    # st.write("""
+    #     This Tableau-like display contains a dataset consisting of regular season, playoffs, and team stats along with the predicted winners of each game.
+    #     Use it to build your own visualizations to dive deeper into the data for all predictions.
+    # """)
+    # viz = pyg.to_html(regular_season)
 
     # Embed the HTML into the Streamlit app
     components.html(viz, height=800, scrolling=True)
@@ -120,7 +120,7 @@ if st.button("Reset", type="primary"):
     st.write('Sending out the Zamboni. The prediction results will clear momentarily.')
 
 st.subheader("Current Season Analysis")
-st.write("Current Top 5 Ranks by Wins vs. Losses")
+st.write("Current Top 10 Ranking Teams by Wins vs. Losses")
 st.dataframe(top5, use_container_width=True)
              
 # Use the native Altair theme.
