@@ -11,9 +11,6 @@ from datetime import datetime, timedelta
 # Queries
 from queries import *
 
-# Snowflake Connection
-conn = st.connection("snowflake")
-
 # Config
 st.set_page_config(
     page_title="NHL Matchup Predictor",
@@ -24,6 +21,9 @@ st.set_page_config(
 
 # Write directly to the app
 st.title("NHL Season Analysis  :ice_hockey_stick_and_puck:")
+
+# Snowflake Connection
+conn = st.connection("snowflake")
 
 # input_away_team = st.text_input(label='Away Team:')
 # if not input_away_team or input_away_team == '':
