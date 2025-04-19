@@ -13,7 +13,7 @@ from queries import *
 
 # Config
 st.set_page_config(
-    page_title="NHL Matchup Predictor",
+    page_title="NHL Season Analysis",
     page_icon=":ice_hockey_stick_and_puck:",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -80,7 +80,7 @@ team_names = [name.lower() for name in teams['TEAM'].unique()]
 #     st.write(f"Awesome! We got both teams ready. Looks like you're looking for {input_away_team} Vs. {input_home_team}. Click Faceoff and let the games begin! :ice_hockey_stick_and_puck:")
 
 # Generate all information. Start with a button
-if st.button('Faceoff'):
+#if st.button('Faceoff'):
 
     # st.subheader(f'Prediction Model Output for {input_away_team} Vs. {input_home_team}')
 
@@ -90,9 +90,9 @@ if st.button('Faceoff'):
     #     st.write("Sorry about that! It looks like the model went out of the way on this one. :|")
 
     # Regular Season
-    st.subheader("Regular Season Data")
-    st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
-    st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
+st.subheader("Regular Season Data")
+st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
+st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
 
     # Display the dataset to enable interactive analysis
     # st.subheader("Explore the Data")
@@ -111,8 +111,8 @@ if st.button('Faceoff'):
     #     away, home = predictions["AWAY_TEAM_ID"].unique(), predictions["HOME_TEAM_ID"].unique()
     #     st.dataframe(pd.DataFrame(away, home), use_container_width=True)
         
-else:
-    st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
+#else:
+    #st.write('Please fill out the values and click the Faceoff Button to view your NHL team matchup.')
 
 if st.button("Reset", type="primary"):
     st.write('Sending out the Zamboni. The prediction results will clear momentarily.')
