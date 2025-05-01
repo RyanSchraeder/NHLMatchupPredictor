@@ -5,6 +5,9 @@ import pandas as pd
 import plotly.express as px
 import streamlit.components.v1 as components
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
+
 import os
 from datetime import datetime, timedelta
 
@@ -23,7 +26,26 @@ st.set_page_config(
 st.title("NHL Season Analysis  :ice_hockey_stick_and_puck:")
 
 # Snowflake Connection
-conn = st.connection("snowflake")
+pk_str = st.secrets["snowflake"]["private_key"]
+pk = serialization.load_pem_private_key(
+    pk_str.encode(),
+    password=None,
+    backend=default_backend()
+)
+pk_der = pk.private_bytes(
+    encoding=serialization.Encoding.DER,
+    format=serialization.PrivateFormat.PKCS8,
+    encryption_algorithm=serialization.NoEncryption()
+)
+
+conn = snowflake.connector.connect(
+    user=st.secrets["snowflake"]["user"],
+    account=st.secrets["snowflake"]["account"],
+    private_key=pk_der
+)
+st.write("Connected to Snowflake!")
+
+cur = conn.cursor()
 
 input_start_date = st.text_input(label="Start Date (Defaults to Last 30 Days, this field is optional.)")
 input_end_date = st.text_input(label="End Date (Defaults to Current Day, this field is optional. Can be up to 30 days into the future as well.)")
