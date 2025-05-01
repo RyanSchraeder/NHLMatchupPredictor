@@ -48,7 +48,7 @@ conn = snowflake.connector.connect(
     database=st.secrets["snowflake"]["database"],
     schema=st.secrets["snowflake"]["schema"]
 )
-st.write("Connected to Snowflake!")
+st.write("Connected to Snowflake! :snowflake: :tada:")
 
 cur = conn.cursor()
 
@@ -66,6 +66,7 @@ if not input_end_date:
 # Set function to query snowflake and return DataFrame
 @st.cache_data
 def execute_queries(query):
+    st.write("Retrieving data from Snowflake :snowflake:")
     cur.execute(query)
     df = cur.fetch_pandas_all()
     return df
@@ -85,7 +86,7 @@ st.write("The teams that are provided are filtered from the table to narrow to g
 st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
 
 if st.button("Reset", type="primary"):
-    st.write('Sending out the Zamboni. The prediction results will clear momentarily.')
+    st.write('Resetting the page. Sending out the Zamboni!')
 
 st.subheader("Current Season Analysis")
 st.write("Current Top 10 Ranking Teams by Wins vs. Losses")
