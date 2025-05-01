@@ -66,7 +66,6 @@ if not input_end_date:
 # Set function to query snowflake and return DataFrame
 @st.cache_data
 def execute_queries(query):
-    st.write("Retrieving data from Snowflake :snowflake:")
     cur.execute(query)
     df = cur.fetch_pandas_all()
     return df
