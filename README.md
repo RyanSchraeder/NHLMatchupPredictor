@@ -1,5 +1,5 @@
 # NHL Season Overview Application
-Streamlit app utilizing my data sourced from Snowflake to provide a generated analysis and potential outcome of an NHL team matchup
+Streamlit app utilizing my data sourced from Snowflake to provide a generated analysis of the current regular season
 
 [https://nhlseasonoverview.streamlit.app/](https://nhlseasonoverview.streamlit.app/)
 
