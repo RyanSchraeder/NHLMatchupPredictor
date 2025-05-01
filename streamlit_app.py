@@ -79,11 +79,6 @@ scoring = execute_queries(scoring())
 
 team_names = [name.lower() for name in teams['TEAM'].unique()]
 
-# Regular Season
-st.subheader("Regular Season Data")
-st.write("The teams that are provided are filtered from the table to narrow to games where this matchup has occurred during this year's regular season.")
-st.write("*_NOTE_*: The data will appear duplicate, but each row is unique. This table combines dimensional data per team statistics that is slowly-changing. In addition, the schedule data is joined in for a full perspective.")
-
 if st.button("Reset", type="primary"):
     st.write('Resetting the page. Sending out the Zamboni!')
 
