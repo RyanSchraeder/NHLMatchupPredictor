@@ -42,7 +42,11 @@ pk_der = pk.private_bytes(
 conn = snowflake.connector.connect(
     user=st.secrets["snowflake"]["user"],
     account=st.secrets["snowflake"]["account"],
-    private_key=pk_der
+    role=st.secrets["snowflake"]["role"], 
+    private_key=pk_der, 
+    warehouse=st.secrets["snowflake"]["warehouse"],
+    database=st.secrets["snowflake"]["database"],
+    schema=st.secrets["snowflake"]["schema"]
 )
 st.write("Connected to Snowflake!")
 
