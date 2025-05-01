@@ -9,14 +9,14 @@ def stats(start, end):
 
 def teams():
     return f"""
-        SELECT * FROM NHL_STATS.RAW.TEAMS
+        SELECT * FROM NHL_STATS.RAW.TEAM_STATISTICS
     """
 def team_ranks():
     return f"""
         WITH WIN_LOSS_RATIOS AS (
             SELECT *,
                 OVERALL_WINS / (OVERALL_WINS + OVERALL_LOSSES) * 1.0 AS WIN_LOSS_RATIO
-            FROM TEAMS
+            FROM TEAM_STATISTICS
             ORDER BY WIN_LOSS_RATIO
         ), RANKS AS (
             SELECT 
