@@ -62,7 +62,8 @@ if not input_end_date:
 # Set function to query snowflake and return DataFrame
 @st.cache_data
 def execute_queries(query):
-    df = conn.query(query, show_spinner=True)
+    cur.execute(query)
+    df = cur.fetch_pandas_all()
     return df
 
 # Create the Stats Query and DataFrame
